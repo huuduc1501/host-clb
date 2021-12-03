@@ -43,6 +43,6 @@ app.get('/', (req, res) => {
 });
 app.use('/api/v1', indexRoute)
 
-server.listen(5000, () => {
+server.listen(process.env.PORT || 5000, () => {
     console.log('server running in port:5000')
 })
