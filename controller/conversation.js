@@ -29,8 +29,9 @@ exports.getConversations = asyncHandler(async (req, res, next) => {
 
 exports.getMessages = asyncHandler(async (req, res, next) => {
     const { conversationId } = req.params
-    const messages = await Message.find({ conversationId })
-        .limit(20)
+    let messages = await Message.find({ conversationId })
+        .sort({ createdAt: -1 })
+        .limit(40)
         .populate('senderId')
         .lean()
     for (let mess of messages) {
@@ -38,6 +39,7 @@ exports.getMessages = asyncHandler(async (req, res, next) => {
             mess.isMine = true
         }
     }
+    messages = messages.reverse()
     res.status(200).json({ success: true, messages })
 })
 
