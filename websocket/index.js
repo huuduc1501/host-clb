@@ -3,7 +3,7 @@ const { WebSocketServer } = require('ws')
 
 const User = require('../model/User')
 const { newMessage, typing } = require('./controller/message')
-const { handleOffer, handleAnswer, handleCandidate, handleLeave } = require('./controller/signaling')
+const { handleOffer, handleAnswer, handleCandidate, handleLeave, handleIncommingCall } = require('./controller/signaling')
 
 const { removeUser, addUser } = require('./util')
 
@@ -22,7 +22,6 @@ const initWebsocketServer = (server) => {
                 });
 
             const { id } = jwt.verify(cookies.token, process.env.JWT_SECRET)
-            console.log(id)
             User.findById(id)
                 .then(user => {
                     info.req.user = user
@@ -41,7 +40,6 @@ const initWebsocketServer = (server) => {
         ws.on('message', data => {
             const buf = Buffer.from(data)
             const receiveObj = JSON.parse(buf.toString())
-            console.log(receiveObj)
             if (receiveObj.type)
                 switch (receiveObj.type) {
                     case 'new-message':
@@ -54,6 +52,9 @@ const initWebsocketServer = (server) => {
                         typing(req.user, receiveObj)
                         break
                     // signaling case
+                    case 'make-call':
+                        handleIncommingCall(req.user, receiveObj)
+                        break
                     case 'offer':
                         handleOffer(req.user, receiveObj)
                         break

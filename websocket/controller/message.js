@@ -37,7 +37,6 @@ exports.newMessage = async (sender, data) => {
                 returnMessage.payload.message.isMine = true
             else
                 returnMessage.payload.message.isMine = false
-            console.log(returnMessage)
 
             emitToUser(memberId, returnMessage)
         })
@@ -54,7 +53,6 @@ exports.typing = async (sender, data) => {
     const { type, payload } = data
     const conversation = await Conversation.findById(payload.conversationId)
     const returnMessage = wsData(type, { user: sender, conversationId: payload.conversationId })
-    console.log(returnMessage)
     conversation.memberIds.forEach(memberId => {
         if (memberId.toString() !== sender._id.toString()) {
             emitToUser(memberId, returnMessage)

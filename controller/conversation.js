@@ -16,7 +16,6 @@ exports.getConversations = asyncHandler(async (req, res, next) => {
     for (let cv of conversations) {
         if (cv.type === 'single') {
             const presentUserId = cv.memberIds.find(mId => mId.toString() !== req.user._id.toString())
-            console.log(presentUserId)
             const presentUser = await User.findById(presentUserId)
             // cv.toObject()
             cv.avatar = presentUser.avatar
@@ -31,7 +30,7 @@ exports.getMessages = asyncHandler(async (req, res, next) => {
     const { conversationId } = req.params
     let messages = await Message.find({ conversationId })
         .sort({ createdAt: -1 })
-        .limit(40)
+        .limit(20)
         .populate('senderId')
         .lean()
     for (let mess of messages) {
