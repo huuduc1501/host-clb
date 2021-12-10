@@ -3,7 +3,7 @@ const { WebSocketServer } = require('ws')
 
 const User = require('../model/User')
 const { newMessage, typing } = require('./controller/message')
-const { handleOffer, handleAnswer, handleCandidate, handleLeave, handleIncommingCall } = require('./controller/signaling')
+const { handleOffer, handleAnswer, handleCandidate, handleLeave, handleIncommingCall, handleSignaling } = require('./controller/signaling')
 
 const { removeUser, addUser } = require('./util')
 
@@ -40,6 +40,7 @@ const initWebsocketServer = (server) => {
         ws.on('message', data => {
             const buf = Buffer.from(data)
             const receiveObj = JSON.parse(buf.toString())
+            console.log(receiveObj.type)
             if (receiveObj.type)
                 switch (receiveObj.type) {
                     case 'new-message':
@@ -54,6 +55,9 @@ const initWebsocketServer = (server) => {
                     // signaling case
                     case 'make-call':
                         handleIncommingCall(req.user, receiveObj)
+                        break
+                    case 'signaling':
+                        handleSignaling(req.user, receiveObj)
                         break
                     case 'offer':
                         handleOffer(req.user, receiveObj)

@@ -26,7 +26,6 @@ exports.emitToUser = (userId, data) => {
 exports.emitToConversationsExeptSender = (memberIds, senderId, data) => {
     memberIds.forEach(memberId => {
         if (memberId.toString() !== senderId.toString()){
-            console.log('khaccccc')
             this.emitToUser(memberId, data)
         }
     })

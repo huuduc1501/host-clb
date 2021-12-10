@@ -38,3 +38,10 @@ exports.handleCandidate = async (sender, data) => {
     const senddingData = wsData(type, { candidate: payload.candidate })
     emitToConversationsExeptSender(conversation.memberIds, sender._id, senddingData)
 }
+
+
+exports.handleSignaling = async (sender, data) => {
+    const { type, payload } = data
+    const conversation = await Conversation.findById(payload.conversationId)
+    emitToConversationsExeptSender(conversation.memberIds, sender._id, data)
+}
